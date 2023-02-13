@@ -30,14 +30,14 @@ process minimap2 {
         samtools index -@ 8 ${samplename}.ont.minimap2.sort.bam
         samtools stats -@ 8 ${samplename}.ont.minimap2.sort.bam > ${samplename}.ont.minimap2.sort.bam.stat.txt
 		echo -e "Sample_ID\tPass_Reads\tMapped_Reads\tMapped_Reads_Rate(%)\tPass_Bases\tMapped_Bases\tMapped_Bases_Rate(%)\tDepth(X)" > ${samplename}.map_stat.xls
-		Pass_Reads=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '1,1p'|awk '{print $4}'`
-		Mapped_Reads=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '7,7p'|awk '{print $3}'`
-		Mapped_Reads_Rate=`awk 'BEGIN{printf "%.2f\n",('$Mapped_Reads'/'$Pass_Reads')*100}'`
-		Pass_Bases=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '16,16p'|awk '{print $3}'`
-		Mapped_Bases=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '19,19p'|awk '{print $3}'`
-		Mapped_Bases_Rate=`awk 'BEGIN{printf "%.2f\n",('$Mapped_Bases'/'$Pass_Bases')*100}'`
-		Depth=`awk 'BEGIN{printf "%.2f\n",'$Mapped_Bases'/2858658097}'`
-		echo -e "${samplename}\t$Pass_Reads\t$Mapped_Reads\t$Mapped_Reads_Rate\t$Pass_Bases\t$Mapped_Bases\t$Mapped_Bases_Rate\t$Depth" >> ${sample}.map_stat.xls
+		Pass_Reads=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '1,1p'|awk '{print \$4}'`
+		Mapped_Reads=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '7,7p'|awk '{print \$3}'`
+		Mapped_Reads_Rate=`awk 'BEGIN{printf "%.2f\n",('\$Mapped_Reads'/'\$Pass_Reads')*100}'`
+		Pass_Bases=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '16,16p'|awk '{print \$3}'`
+		Mapped_Bases=`grep ^SN ${samplename}.ont.minimap2.sort.bam.stat.txt |cut -f 2-|sed -n '19,19p'|awk '{print \$3}'`
+		Mapped_Bases_Rate=`awk 'BEGIN{printf "%.2f\n",('\$Mapped_Bases'/'\$Pass_Bases')*100}'`
+		Depth=`awk 'BEGIN{printf "%.2f\n",'\$Mapped_Bases'/2858658097}'`
+		echo -e "${samplename}\t\$Pass_Reads\t\$Mapped_Reads\t\$Mapped_Reads_Rate\t\$Pass_Bases\t\$Mapped_Bases\t\$Mapped_Bases_Rate\t\$Depth" >> ${sample}.map_stat.xls
     """
 }
 
@@ -98,7 +98,7 @@ workflow {
     getParams()
     minimap2()
     grandSTR()
-    
+
     //pipeline(samples)
     //output(pipeline.out.results)
 
