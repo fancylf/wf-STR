@@ -96,8 +96,8 @@ process output {
 
 workflow {
     getParams()
-    minimap2()
-    grandSTR()
+    //minimap2()
+    //grandSTR()
 
     //pipeline(samples)
     //output(pipeline.out.results)
