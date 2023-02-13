@@ -53,11 +53,11 @@ process grandSTR {
         path "${samplename}.str.bam", path "${samplename}.STR_infos.modify"
     shell:
     """
-    /home/software/GrandSTR_v1.2.9/GrandSTR ${target_STR_region} ${samplename} -rf $reference_genome -bf ${samplename}.ont.minimap2.sort.bam -rt ont -em 0 -mi 0.6
-	awk '{if($6 != 0){print $0}else{print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t.\t.\t.\t0,0\t0\tNA" }}' ${samplename}.STR_infos > ${samplename}.STR_infos.modify
+    /home/software/GrandSTR_v1.2.9/GrandSTR ${target_STR_region} ${samplename} -rf ${reference_genome} -bf ${samplename}.ont.minimap2.sort.bam -rt ont -em 0 -mi 0.6
+	awk '{if(\$6 != 0){print \$0}else{print \$1 "\t" \$2 "\t" \$3 "\t" \$4 "\t" \$5 "\t" \$6 "\t" \$7 "\t.\t.\t.\t0,0\t0\tNA" }}' ${samplename}.STR_infos > ${samplename}.STR_infos.modify
 	#get str bam
-	awk -F ',' '{print $2 "\t" $3-1000 "\t" $4+1000 "\t" $1}' ${target_STR_region} > Target_STR_region_refine.V3.pa_updown.bed
-	samtools view -bh -L Target_STR_region_refine.V3.pa_updown.bed ${bam} > ${sample}.str.bam
+	awk -F ',' '{print \$2 "\t" \$3-1000 "\t" \$4+1000 "\t" \$1}' ${target_STR_region} > Target_STR_region_refine.V3.pa_updown.bed
+	samtools view -bh -L Target_STR_region_refine.V3.pa_updown.bed ${samplename}.ont.minimap2.sort.bam > ${sample}.str.bam
 	samtools index ${samplename}.str.bam
 	
     """
