@@ -1,0 +1,103 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/./master/nextflow_schema.json",
+    "title": "epi2me-labs/wf-template",
+    "description": "Nextflow workflow template repository.",
+    "url": "https://github.com/epi2me-labs/wf-template",
+    "type": "object",
+    "definitions": {
+        "basic_input_output_options": {
+            "title": "Basic Input/Output Options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "properties": {
+                "out_dir": {
+                    "type": "string",
+                    "default": "output",
+                    "description": "Directory for output."
+                },
+                "fastq": {
+                    "type": "string",
+                    "format": "path",
+                    "description": "A fastq file."
+               
+                },
+                "reference_genome" :{
+                    "type": "string",
+                    "format": "path",
+                    "description": "Reference genome path."
+                },
+                "target_STR_region" :{
+                    "type": "string",
+                    "format": "path",
+                    "description": "Target STR region bed file."
+                },
+                "minimap2_addition_para" :{
+                    "type": "string",
+                    "default": "-L --MD -Y -a -x map-ont --secondary=no",
+                    "description": "Additional parameters for minimap2."
+                }
+
+            },
+            "required": [
+                "fastq"
+            ]
+        },
+        "meta_data": {
+            "title": "Meta Data",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "samplename": {
+                    "type": "string",
+                    "description": "A sample name for fastq file. Used for prefix of output files."
+                },
+                "report_name": {
+                    "type": "string",
+                    "default": "report",
+                    "description": "Output report filename suffix."
+                },
+                "disable_ping": {
+                    "type": "boolean",
+                    "default": "false",
+                    "description": "Enable to prevent sending a workflow ping."
+                }
+                
+                
+            }
+        },
+        "generic_options": {
+            "title": "Generic options",
+            "type": "object",
+            "fa_icon": "far fa-question-circle",
+            "description": "Less common options for the pipeline, typically set in a config file.",
+            "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+            "properties": {
+                "help": {
+                    "type": "boolean",
+                    "description": "Display help text.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/basic_input_output_options"
+        },
+        {
+            "$ref": "#/definitions/meta_data"
+        },
+        {
+            "$ref": "#/definitions/generic_options"
+        }
+    ],
+    
+    "docs": {
+        "intro": "## Introduction\n\nThis section of documentation typically contains an overview of the workflow in terms of motivation\nand bioinformatics methods, listing any key tools or algorithms employed, whilst also describing its\nrange of use-cases and what a suitable input dataset should look like.\n\n",
+        "links": "## Useful links\n\n* [nextflow](https://www.nextflow.io/)\n* [docker](https://www.docker.com/products/docker-desktop)\n* [conda](https://docs.conda.io/en/latest/miniconda.html)\n"
+    }
+}
