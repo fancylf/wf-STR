@@ -1,9 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/./master/nextflow_schema.json",
-    "title": "epi2me-labs/wf-template",
-    "description": "Nextflow workflow template repository.",
-    "url": "https://github.com/epi2me-labs/wf-template",
+    "title": "wf-STR",
+    "description": "Nextflow workflow STR pipeline.",
+    "url": "https://github.com/fancylf/wf-STR",
     "type": "object",
     "definitions": {
         "basic_input_output_options": {
@@ -19,17 +19,17 @@
                 },
                 "fastq": {
                     "type": "string",
-                    "format": "path",
+                    "format": "file-path",
                     "description": "A fastq file."
                 },
                 "reference_genome": {
                     "type": "string",
-                    "format": "path",
+                    "format": "file-path",
                     "description": "Reference genome path."
                 },
                 "target_STR_region": {
                     "type": "string",
-                    "format": "path",
+                    "format": "file-path",
                     "description": "Target STR region bed file."
                 },
                 "minimap2_addition_para": {
