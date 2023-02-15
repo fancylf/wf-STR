@@ -21,24 +21,22 @@
                     "type": "string",
                     "format": "path",
                     "description": "A fastq file."
-               
                 },
-                "reference_genome" :{
+                "reference_genome": {
                     "type": "string",
                     "format": "path",
                     "description": "Reference genome path."
                 },
-                "target_STR_region" :{
+                "target_STR_region": {
                     "type": "string",
                     "format": "path",
                     "description": "Target STR region bed file."
                 },
-                "minimap2_addition_para" :{
+                "minimap2_addition_para": {
                     "type": "string",
                     "default": "-L --MD -Y -a -x map-ont --secondary=no",
                     "description": "Additional parameters for minimap2."
                 }
-
             },
             "required": [
                 "fastq"
@@ -52,6 +50,7 @@
             "properties": {
                 "samplename": {
                     "type": "string",
+                    "default": "sample",
                     "description": "A sample name for fastq file. Used for prefix of output files."
                 },
                 "report_name": {
@@ -64,8 +63,6 @@
                     "default": "false",
                     "description": "Enable to prevent sending a workflow ping."
                 }
-                
-                
             }
         },
         "generic_options": {
@@ -95,7 +92,6 @@
             "$ref": "#/definitions/generic_options"
         }
     ],
-    
     "docs": {
         "intro": "## Introduction\n\nThis section of documentation typically contains an overview of the workflow in terms of motivation\nand bioinformatics methods, listing any key tools or algorithms employed, whilst also describing its\nrange of use-cases and what a suitable input dataset should look like.\n\n",
         "links": "## Useful links\n\n* [nextflow](https://www.nextflow.io/)\n* [docker](https://www.docker.com/products/docker-desktop)\n* [conda](https://docs.conda.io/en/latest/miniconda.html)\n"
