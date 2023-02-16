@@ -1,0 +1,108 @@
+{
+    "assemblies": [
+        {
+            "name": "ref",
+            "aliases": [],
+            "sequence": {
+                "type": "ReferenceSequenceTrack",
+                "trackId": "ref",
+                "adapter": {
+                    "type": "IndexedFastaAdapter",
+                    "fastaLocation": {
+                        "uri": "/grandomics/Workflow/example/data/human_g1k_v37.fasta",
+                        "locationType": "UriLocation"
+                    },
+                    "faiLocation": {
+                        "uri": "/grandomics/Workflow/example/data/human_g1k_v37.fasta.fai",
+                        "locationType": "UriLocation"
+                    }
+                },
+                "rendering": {
+                    "type": "DivSequenceRenderer"
+                }
+            }
+        }
+    ],
+    "defaultSession": {
+        "name": "epi2me-labs",
+        "views": [
+            {
+                "id": "view",
+                "type": "LinearGenomeView",
+                "displayedRegions": [
+                    {
+                        "assemblyName": "ref",
+                        "refName": "human_g1k_v37",
+                        "start": 0,
+                        "end": 110007,
+                        "reversed": false
+                    }
+                ],
+                "tracks": [
+                    {
+                        "id": "ref-track",
+                        "type": "ReferenceSequenceTrack",
+                        "configuration": "ref",
+                        "displays": [
+                            {
+                                "id": "ref-track-display",
+                                "type": "LinearReferenceSequenceDisplay",
+                                "configuration": "ref-LinearReferenceSequenceDisplay"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "alignment-sample_C-track",
+                        "type": "AlignmentsTrack",
+                        "configuration": "alignment-sample_C",
+                        "displays": [
+                            {
+                                "id": "alignment-sample_C-track-display",
+                                "type": "LinearAlignmentsDisplay",
+                                "configuration": "alignment-sample_C-LinearAlignmentsDisplay",
+                                "PileupDisplay": {
+                                    "id": "alignment-sample_C-track-display-pileup",
+                                    "type": "LinearPileupDisplay",
+                                    "configuration": {
+                                        "type": "LinearPileupDisplay",
+                                        "displayId": "alignment-sample_C-LinearAlignmentsDisplay_pileup_xyz"
+                                    }
+                                }
+                            }
+                        ]
+                    }                
+                ],
+                "location": "1:57801669..57809669"
+            }
+        ],
+        "minimized": true
+    },
+    "tracks": [
+        {
+            "trackId": "alignment-sample_C",
+            "name": "alignment-sample_C",
+            "assemblyNames": [
+                "ref"
+            ],
+            "type": "AlignmentsTrack",
+            "adapter": {
+                "type": "BamAdapter",
+                "bamLocation": {
+                    "uri": "/grandomics/Workflow/example/test_data/TGXY2200016501.str.bam",
+                    "locationType": "UriLocation"
+                },
+                "index": {
+                    "indexType": "BAI",
+                    "location": {
+                        "uri": "/grandomics/Workflow/example/test_data/TGXY2200016501.str.bam.bai",
+                        "locationType": "UriLocation"
+                    }
+                }
+            }
+        }
+
+    ],
+    "configuration": {
+        "disableAnalytics": true
+    }
+}
