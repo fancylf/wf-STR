@@ -31,7 +31,7 @@ def bar_plot(x, y, title):
 
     fig.update_layout(
         title_text=title,
-        title_x = 0.5,
+        #title_x = 0.5,
         width=1000,
         height=600
     )
@@ -63,7 +63,7 @@ def read_table_to_array(xls, header=True):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--info', help="GrandSTR info files")
+    parser.add_argument('--info', help="GrandSTR annotated info files")
     parser.add_argument('--mapstat', help="map stat xls")
     parser.add_argument('--outdir', help="output directory")
     parser.add_argument('--software', help="software versions txt")
@@ -71,27 +71,28 @@ def main():
     parser.add_argument('--template', help="html template")
     args = parser.parse_args()
 
-    sample = os.path.basename(args.info).split('.')[0]
-    plotdiv = []
+    #sample = os.path.basename(args.info).split('.')[0]
+    #plotdiv = []
     for rec in DictReader(open(args.info), delimiter='\t'):
-        x, y = parse_repeat_string(rec['Details'])
-        title = f"{rec['#Name']} in sample:{sample}"
-        fig = bar_plot(x, y, title)
-        plotdiv.append(plotly.offline.plot(fig, output_type='div', include_plotlyjs=False))
-        #html_pic = os.path.join(mkdir(f"{args.outdir}/{sample}"), f"{rec['#Name']}.html")
-        #fig.write_html(html_pic)
+        if rec['#Name'] == 'STR046343':
+            break
+
+    x, y = parse_repeat_string(rec['Details'])
+    title = f"{rec['#Name']} {rec['Gene']}"
+    fig = bar_plot(x, y, title)
+    div = plotly.offline.plot(fig, output_type='div', include_plotlyjs=False)
 
     table_mapping = read_table_to_array(args.mapstat)
     table_soft = read_soft_version(args.software)
     table_param = read_param_json(args.param)
     temp = jinja2.Template(open(args.template).read())
     html = temp.render(
-        divs='\n'.join(plotdiv), 
+        divs=div, 
         table_soft=table_soft, 
         table_param=table_param,
         table_mapping = table_mapping
     )
-    #with open(os.path.join(args.outdir, f'{sample}.STR_report.html'), 'w') as out:
+
     with open(os.path.join(args.outdir, 'STR_report.html'), 'w') as out:
         out.write(html)
 
