@@ -25,9 +25,15 @@ def parse_repeat_string(s):
     return x, y
 
 
-def bar_plot(x, y, title):
+def bar_plot(x, y, title, vline):
     df = pd.DataFrame({'repeats':x, 'reads number':y})
     fig = px.bar(df, x='repeats', y='reads number')
+    fig.add_vline(x=vline, 
+                  line_color='red', 
+                  #annotation_text=str(vline), 
+                  #annotation_position='bottom right',
+                  line_dash='dot'
+    )
 
     fig.update_layout(
         title_text=title,
@@ -79,7 +85,8 @@ def main():
 
     x, y = parse_repeat_string(rec['Details'])
     title = f"{rec['#Name']} {rec['Gene']}"
-    fig = bar_plot(x, y, title)
+    vline = int(rec['Pathogenic repeats number'])
+    fig = bar_plot(x, y, title, vline)
     div = plotly.offline.plot(fig, output_type='div', include_plotlyjs=False)
 
     table_mapping = read_table_to_array(args.mapstat)

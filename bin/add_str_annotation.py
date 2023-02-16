@@ -13,8 +13,10 @@ def parse_repeat_string(s):
 def add_grandstr_annot(info_file, database_file):
 
     def judge_positive(ds):
+        if ds['Pathogenic repeats number'] == '-':
+            return '-'
         max_repeat = parse_repeat_string(ds['Details'])
-        if max_repeat >= ds['Pathogenic repeats number']:
+        if max_repeat >= int(ds['Pathogenic repeats number']):
             return 'Yes'
         else:
             return 'No'
