@@ -92,7 +92,7 @@ def main():
         table_mapping = table_mapping
     )
     #with open(os.path.join(args.outdir, f'{sample}.STR_report.html'), 'w') as out:
-    with open(os.path.join(args.outdir, f'STR_report.html'), 'w') as out:
+    with open(os.path.join(args.outdir, 'STR_report.html'), 'w') as out:
         out.write(html)
 
 
