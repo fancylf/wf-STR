@@ -1,9 +1,7 @@
-import os
+
 import argparse
 import pandas as pd
 
-
-BASEDIR = os.path.dirname(__file__)
 
 def parse_repeat_string(s):
     d = {}
@@ -24,8 +22,12 @@ def add_grandstr_annot(info_file, database_file):
         else:
             return 'No'
 
+    headers = ['#Name', 'Chromosome', 'Start position', 
+               'End position', 'Motif', 'Reference repeats number', 
+               'N', 'Region in genome', 'Gene', 'Pathogenic repeats number']
     df = pd.read_csv(info_file, sep='\t')
-    db = pd.read_csv(database_file, sep='\t')
+    db = pd.read_csv(database_file, header=None, names=headers)
+    db.drop('N', axis=1, inplace=True)
     dfmerge = pd.merge(df, db, how='left', on='#Name')
     dfmerge = dfmerge.fillna('.')
     dfmerge['LP'] = dfmerge.apply(judge_positive, axis=1)
@@ -36,17 +38,15 @@ def add_grandstr_annot(info_file, database_file):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--info', help="GrandSTR info files")
-    parser.add_argument('--db', help="database xls file, default: grandstr_database.xls")
+    parser.add_argument('--info', help="input GrandSTR info files")
+    parser.add_argument('--pa', help="input pa csv file, 10 columns.")
     parser.add_argument('--outfile', help="output file. default: {info}.annot.xls")
     args = parser.parse_args()
 
-    if args.db is None:
-        args.db = os.path.join(BASEDIR, 'grandstr_database.xls')
     if args.outfile is None:
         args.outfile = f"{args.info}.annot.xls"
 
-    df = add_grandstr_annot(args.info, args.db)
+    df = add_grandstr_annot(args.info, args.pa)
     df.to_csv(args.outfile, sep='\t', index=False)
 
 
