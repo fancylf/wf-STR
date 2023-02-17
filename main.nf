@@ -33,7 +33,7 @@ process minimap2 {
 
     label "alignment"
     
-    cpus 32
+    cpus 48
     input:
         path(fastq)
         path(reference_genome)
@@ -43,7 +43,7 @@ process minimap2 {
         path "${samplename}.ont.minimap2.sort.bam"
     shell:
     """
-        minimap2 -t 32 ${minimap2_addition_para} ${reference_genome} ${fastq} | samtools sort -@ 8 -o ${samplename}.ont.minimap2.sort.bam > ${samplename}.minimap2.log_o_file 2> ${samplename}.minimap2.log_e_file
+        minimap2 -t 48 ${minimap2_addition_para} ${reference_genome} ${fastq} | samtools sort -@ 8 -m 8G -o ${samplename}.ont.minimap2.sort.bam > ${samplename}.minimap2.log_o_file 2> ${samplename}.minimap2.log_e_file
     """
 }
 
@@ -52,7 +52,7 @@ process grandSTR {
 
     label "STRdetection"
     publishDir "${params.out_dir}", mode: 'copy', pattern: "*"
-    cpus 4
+    cpus 32
     input:
         path(bam_file)
         path(reference_genome)
@@ -61,23 +61,24 @@ process grandSTR {
         path(target_STR_region)
         
     output:
-        path "${samplename}.map_stat.xls"
+        path "${bam_file}.stat.txt"
         path "${samplename}.str.bam"
         path "${samplename}.str.bam.bai"
         path "${samplename}.STR_infos"
     shell:
     """
-        samtools index -@ 8 ${bam_file}
-        samtools stats -@ 8 ${bam_file} > ${bam_file}.stat.txt
-        echo -e "Sample_ID\tPass_Reads\tMapped_Reads\tMapped_Reads_Rate(%)\tPass_Bases\tMapped_Bases\tMapped_Bases_Rate(%)\tDepth(X)" > ${samplename}.map_stat.xls
+        samtools index -@ 32 ${bam_file}
+        samtools stats -@ 32 ${bam_file} > ${bam_file}.stat.txt
         /home/software/GrandSTR_v1.2.9/GrandSTR ${target_STR_region} ${samplename} -rf ${reference_genome} -bf ${bam_file} -rt ont -em 0 -mi 0.6
         awk '{if(\$6 != 0){print \$0}else{print \$1 "\\t" \$2 "\\t" \$3 "\\t" \$4 "\\t" \$5 "\\t" \$6 "\\t" \$7 "\\t.\\t.\\t.\\t0,0\\t0\\tNA" }}' ${samplename}.STR_infos > ${samplename}.STR_infos.modify
         #get str bam
-        awk -F ',' '{print \$2 "\\t" \$3-1000 "\\t" \$4+1000 "\\t" \$1}' ${target_STR_region} > Target_STR_region_refine.V3.pa_updown.bed
-        samtools view -bh -L Target_STR_region_refine.V3.pa_updown.bed ${samplename}.ont.minimap2.sort.bam > ${samplename}.str.bam
-        samtools index ${samplename}.str.bam
+        samtools view -H ${samplename}.ont.minimap2.sort.bam >  ${samplename}.str.sam
+        awk -F ',' '{print "samtools view ${samplename}.ont.minimap2.sort.bam "\$2":" \$3-1000 "-" \$4+1000}' |sh |samtools view -bS - >  ${samplename}.str.bam
+        samtools index -@ 8 ${samplename}.str.bam
 	
     """
+        //awk -F ',' '{print \$2 "\\t" \$3-1000 "\\t" \$4+1000 "\\t" \$1}' ${target_STR_region} > Target_STR_region_refine.V3.pa_updown.bed
+        //samtools view -bh -L Target_STR_region_refine.V3.pa_updown.bed ${samplename}.ont.minimap2.sort.bam > ${samplename}.str.bam
 }
 
 process getParams {
@@ -121,6 +122,21 @@ process getVersions_grandSTR {
     """
 }
 
+process annoSTR {
+    label "wfSTR"
+    publishDir "${params.out_dir}", mode: 'copy', pattern: "*"
+    cpus 1
+    input:
+        path(target_str_config)
+        val(str_result)
+
+    output:
+        path "STR_infos.annot.xls"
+    script:
+    """
+    python $baseDir/bin/add_str_annotation.py --info ${str_result} --pa ${target_str_config} --outfile STR_infos.annot.xls
+    """
+}
 
 process makeReport {
     label "wfSTR"
@@ -129,15 +145,19 @@ process makeReport {
     publishDir "${params.out_dir}", mode: 'copy', pattern: "*"
     cpus 1
     input:
+        val(samplename)
         val(params_report)
         val(all_version_report)
         val(str_result_report)
+        val(bam_stat_report)
 
     output:
+        path "${samplename}.map_stat.xls"
         path "STR_report.html"
     script:
     """
-    python $baseDir/bin/GrandSTR_report.py --param  ${params_report} --software  ${all_version_report} --info ${str_result_report} --template $baseDir/bin/str_report_template.html --outdir "./"
+    python $baseDir/bin/map_stat_from_bamstat.py --sample ${samplename} --bamstat ${bam_stat_report}
+    python $baseDir/bin/GrandSTR_report.py --mapstat ${samplename}.map_stat.xls --param  ${params_report} --software  ${all_version_report} --info ${str_result_report} --template $baseDir/bin/str_report_template.html --outdir "./"
     """
 }
 
@@ -192,9 +212,10 @@ workflow {
     params_file = getParams()
     bam_file = minimap2(params.fastq, params.reference_genome, params.minimap2_addition_para, params.samplename)
     (bam_stat_file, str_bam_file, str_bam_index, str_result) = grandSTR(bam_file, params.reference_genome, params.minimap2_addition_para, params.samplename, params.target_STR_region)
+    str_annot_result = annoSTR(params.target_STR_region, str_result)
     aligner_version = getVersions_alignment()
     all_version =  getVersions_grandSTR(aligner_version)
-    str_report = makeReport(params_file, all_version, str_result)
+    str_report = makeReport(params.samplename, params_file, all_version, str_annot_result, bam_stat_file)
     jbrowse_result = configure_jbrowse(params.reference_genome, str_bam_file)
     //output(params_file, all_version, str_bam_file, str_bam_index, str_result, str_report, jbrowse_result, params.out_dir)
     
