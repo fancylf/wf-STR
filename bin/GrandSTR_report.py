@@ -78,13 +78,17 @@ def main():
     args = parser.parse_args()
 
     #sample = os.path.basename(args.info).split('.')[0]
-    #plotdiv = []
+    
     for rec in DictReader(open(args.info), delimiter='\t'):
-        if rec['#Name'] == 'STR046343':
+        if rec['LP'] == 'Yes':
             break
+        if rec['#Name'] == 'STR046343':
+            bak_rec = rec
+    if rec['LP'] != 'Yes':
+        rec = bak_rec
 
     x, y = parse_repeat_string(rec['Details'])
-    title = f"{rec['#Name']} {rec['Gene']}"
+    title = f"STR_ID:{rec['#Name']} Gene:{rec['Gene']}"
     vline = int(rec['Pathogenic repeats number'])
     fig = bar_plot(x, y, title, vline)
     div = plotly.offline.plot(fig, output_type='div', include_plotlyjs=False)

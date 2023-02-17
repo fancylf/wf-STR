@@ -520,7 +520,7 @@ input[type='checkbox']{
 
 
     <h3>STR检测结果</h3>
-    <p>使用GrandSTR软件得到STR的重复次数和reads支持数信息，如下：（横坐标为重复次数，纵坐标为reads支持数）</p>
+    <p>使用GrandSTR软件得到STR的重复次数和reads支持数信息，如下：（横坐标为重复次数，纵坐标为reads支持数，红色虚线为可能致病线）</p>
     <div class="bk-root" id="a88c1836-b4c4-4baf-86ab-c641bf122725" data-root-id="1087">
       {{ divs }}
     </div>
@@ -530,18 +530,18 @@ input[type='checkbox']{
     <h3>软件版本</h3>
     <p></p>
             <style>
-            #aa0f5968e9284391822f799509cb630a{
+            #table_software{
               font-family: Arial, Helvetica, sans-serif;
               border-collapse: collapse;
               width: 100%;
             }
-            #aa0f5968e9284391822f799509cb630a td, #aa0f5968e9284391822f799509cb630a th {
+            #table_software td, #table_software th {
               border: 1px solid #ddd;
               padding: 4px;
             }
-            #aa0f5968e9284391822f799509cb630a tr:nth-child(even){background-color: #f2f2f2;}
-            #aa0f5968e9284391822f799509cb630a tr:hover {background-color: #90C5E7;}
-            #aa0f5968e9284391822f799509cb630a th {
+            #table_software tr:nth-child(even){background-color: #f2f2f2;}
+            #table_software tr:hover {background-color: #90C5E7;}
+            #table_software th {
               padding-top: 4px;
               padding-bottom: 4px;
               text-align: left;
@@ -551,7 +551,7 @@ input[type='checkbox']{
             </style>
 
 
-    <table border="1" class="dataframe" id="aa0f5968e9284391822f799509cb630a">
+    <table border="1" class="dataframe" id="table_software">
       <thead>
         <tr style="text-align: right;">
           <th>Name</th>
@@ -569,8 +569,8 @@ input[type='checkbox']{
     </table>
 
               <script defer type="text/javascript">
-                  let aa0f5968e9284391822f799509cb630a = new simpleDatatables.DataTable(
-                      "#aa0f5968e9284391822f799509cb630a",{
+                  let table_software = new simpleDatatables.DataTable(
+                      "#table_software",{
                       searchable: true,
                       paging: true,
                       sortable: true,

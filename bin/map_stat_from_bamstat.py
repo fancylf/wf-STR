@@ -43,7 +43,7 @@ def main():
 
     with open(f"{args.sample}.map_stat.xls", 'w') as out:
         out.write('\t'.join(headers) + "\n")
-        out.write("{}\t{:,}\t{:,}\t{:.2%}\t{:,}\t{:,}\t{:.2%}\t{}\n".format(
+        out.write("{}\t{:,}\t{:,}\t{:.2%}\t{:,}\t{:,}\t{:.2%}\t{:.1f}\n".format(
             args.sample,
             d['total_reads'],
             d['map_reads'],
@@ -51,7 +51,7 @@ def main():
             d['total_base'],
             d['map_base'],
             d['map_base'] / d['total_base'],
-            int(d['total_base'] / 3101804739)
+            d['total_base'] / 3101804739
         ))
 
 

@@ -1,6 +1,9 @@
+import os
 import argparse
 import pandas as pd
 
+
+BASEDIR = os.path.dirname(__file__)
 
 def parse_repeat_string(s):
     d = {}
@@ -26,6 +29,7 @@ def add_grandstr_annot(info_file, database_file):
     dfmerge = pd.merge(df, db, how='left', on='#Name')
     dfmerge = dfmerge.fillna('.')
     dfmerge['LP'] = dfmerge.apply(judge_positive, axis=1)
+    dfmerge['STR score'] = ''
 
     return dfmerge
 
@@ -33,11 +37,17 @@ def add_grandstr_annot(info_file, database_file):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--info', help="GrandSTR info files")
-    parser.add_argument('--db', default='grandstr_database.xls')
+    parser.add_argument('--db', help="database xls file, default: grandstr_database.xls")
+    parser.add_argument('--outfile', help="output file. default: {info}.annot.xls")
     args = parser.parse_args()
 
+    if args.db is None:
+        args.db = os.path.join(BASEDIR, 'grandstr_database.xls')
+    if args.outfile is None:
+        args.outfile = f"{args.info}.annot.xls"
+
     df = add_grandstr_annot(args.info, args.db)
-    df.to_csv(f"{args.info}.annot.xls", sep='\t', index=False)
+    df.to_csv(args.outfile, sep='\t', index=False)
 
 
 if __name__ == "__main__":
