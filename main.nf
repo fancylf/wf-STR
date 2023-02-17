@@ -73,7 +73,8 @@ process grandSTR {
         awk '{if(\$6 != 0){print \$0}else{print \$1 "\\t" \$2 "\\t" \$3 "\\t" \$4 "\\t" \$5 "\\t" \$6 "\\t" \$7 "\\t.\\t.\\t.\\t0,0\\t0\\tNA" }}' ${samplename}.STR_infos > ${samplename}.STR_infos.modify
         #get str bam
         samtools view -H ${samplename}.ont.minimap2.sort.bam >  ${samplename}.str.sam
-        awk -F ',' '{print "samtools view ${samplename}.ont.minimap2.sort.bam "\$2":" \$3-1000 "-" \$4+1000}' |sh |samtools view -bS - >  ${samplename}.str.bam
+        awk -F ',' '{print "samtools view ${samplename}.ont.minimap2.sort.bam "\$2":" \$3-1000 "-" \$4+1000}' ${target_STR_region} |sh >>  ${samplename}.str.sam
+        samtools view -bS  ${samplename}.str.sam | samtools sort -o ${samplename}.str.bam
         samtools index -@ 8 ${samplename}.str.bam
 	
     """
